@@ -5,7 +5,7 @@ from PIL import Image
 import torchvision.transforms as T
 
 import gradio as gr
-
+from gradio import themes
 
 # Current path
 current_path = os.getcwd()
@@ -58,10 +58,28 @@ def predict(image: Image.Image):
     return pred_class
 
 
-interface = gr.Interface(
-    fn=predict,
-    inputs=gr.Image(type="pil"),
-    outputs=["text"],
+examples = [
+    os.path.join(current_path, "ml", "data", "google_maps.jpg"),
+    os.path.join(current_path, "ml", "data", "train_11890.jpg"),
+    os.path.join(current_path, "ml", "data", "train_11716.jpg"),
+]
+
+theme = gr.Theme(
+    primary_hue="blue",
+    secondary_hue="blue",
+    font="Arial",
+    font_mono="Courier New",
 )
 
-interface.launch()
+interface = gr.Interface(
+    fn=predict,
+    inputs=gr.Image(type="pil", height=350),
+    outputs=["text"],
+    examples=examples,
+    title="Weather Condition Classifier",
+    description="Upload an image to classify the weather condition as Clear sky, Cloudy, or Haze.",
+    preload_example=0,
+    theme=themes.Base(),
+)
+
+interface.launch(debug=True)
